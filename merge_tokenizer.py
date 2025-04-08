@@ -6,6 +6,55 @@ from transformers import PreTrainedTokenizerFast, AutoTokenizer
 from tokenizers.models import BPE
 from tokenizers.pre_tokenizers import Whitespace
 
+additional_tokens = ['<|end_of_turn|>',
+ '<|pad|>',
+ '<|im_start|>',
+ '[INST]',
+ '[/INST]',
+ '<<SYS>>',
+ '<</SYS>>',
+ '<|user|>',
+ '<|system|>',
+ '<|assistant|>',
+ '<|begin_of_text|>',
+ '<|start_header_id|>',
+ '<|end_header_id|>',
+ '<|eot_id|>',
+ '<|im_end|>',
+ '<|reserved_0|>',
+ '<|reserved_1|>',
+ '<|reserved_2|>',
+ '<|reserved_3|>',
+ '<|reserved_4|>',
+ '<|reserved_5|>',
+ '<|reserved_6|>',
+ '<|reserved_7|>',
+ '<|reserved_8|>',
+ '<|reserved_9|>',
+ '<|reserved_10|>',
+ '<|reserved_11|>',
+ '<|reserved_12|>',
+ '<|reserved_13|>',
+ '<|reserved_14|>',
+ '<|reserved_15|>',
+ '<|reserved_16|>',
+ '<|reserved_17|>',
+ '<|reserved_18|>',
+ '<|reserved_19|>',
+ '<|reserved_20|>',
+ '<|reserved_21|>',
+ '<|reserved_22|>',
+ '<|reserved_23|>',
+ '<|reserved_24|>',
+ '<|reserved_25|>',
+ '<|reserved_26|>',
+ '<|reserved_27|>',
+ '<|reserved_28|>',
+ '<|reserved_29|>',
+ '<|reserved_30|>',
+ '<|reserved_31|>',
+ '<|reserved_32|>']
+
 def get_tokenizer(version, model_id):
     if version == 0:
         tokenizer = AutoTokenizer.from_pretrained(model_id)
@@ -41,8 +90,8 @@ def main():
 
     tokenizer = get_tokenizer(args.version, args.model_id)
 
-    # for text in args.texts:
-    #     tokenize_text(text, tokenizer)
+    for text in args.texts:
+        tokenize_text(text, tokenizer)
 
     hi_spm = spm.SentencePieceProcessor()
     hi_spm.Load(args.spm_model)
@@ -70,11 +119,13 @@ def main():
     print(f'total tokens: {len(nepali_vocab)}')
 
     tokenizer.add_tokens(new_tokens)
+    tokenizer.add_special_tokens({'additional_special_tokens': additional_tokens})
 
-    # for text in args.texts:
-    #     tokenize_text(text, tokenizer)
 
-    # tokenizer.save_pretrained(args.output_dir)
+    for text in args.texts:
+        tokenize_text(text, tokenizer)
+
+    tokenizer.save_pretrained(args.output_dir)
 
 if __name__ == "__main__":
     main()
