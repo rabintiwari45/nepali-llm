@@ -16,10 +16,6 @@ additional_tokens = ['<|end_of_turn|>',
  '<|user|>',
  '<|system|>',
  '<|assistant|>',
- '<|begin_of_text|>',
- '<|start_header_id|>',
- '<|end_header_id|>',
- '<|eot_id|>',
  '<|im_end|>']
 
 def get_tokenizer(version, model_id):
@@ -88,7 +84,7 @@ def main():
     tokenizer.add_tokens(new_tokens)
     ## dynamically add  reserved tokens to make it multiple of 64 for performance improvement: karpath
     reserved_length_64 = (((len(tokenizer)//64) + 1) * 64) - len(tokenizer)
-    for n in range(reserved_length_64):
+    for n in range(reserved_length_64 - len(additional_tokens)):
         additional_tokens.append(f'<|reserved_{n}|>')
 
     tokenizer.add_special_tokens({'additional_special_tokens': additional_tokens})
